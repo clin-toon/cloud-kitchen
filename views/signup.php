@@ -1,3 +1,7 @@
+<?php
+session_start()
+    ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -80,10 +84,17 @@
 
                 <p class="text-center text-sm">
                     Already have an account?
-                    <a href="login.php" class="text-red-500 font-semibold">Login</a>
+                    <a href="login.php" class="text-purple-500 underline red-500 font-semibold">Login</a>
                 </p>
 
             </form>
+
+            <?php if (isset($_SESSION['signup'])): ?>
+                <p class="text-red-500 text-center font-bold mt-3">
+                    <?php echo $_SESSION['signup']; ?>
+                    <?php unset($_SESSION['signup']); ?>
+                </p>
+            <?php endif; ?>
         </div>
 
     </div>

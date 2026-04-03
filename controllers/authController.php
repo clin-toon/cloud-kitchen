@@ -25,7 +25,8 @@ if (isset($_POST['signup'])) {
     $result = $check->get_result();
 
     if ($result->num_rows > 0) {
-        echo "Email or Username already exists!";
+        $_SESSION['signup'] = "Sign up error! Email or username already exists. ";
+        header("Location: ../views/signup.php");
         exit;
     }
 
@@ -49,44 +50,89 @@ if (isset($_POST['signup'])) {
         // COMMIT
         $conn->commit();
 
-        echo "Signup successful!";
-        // header("Location: ../views/login.php");
+        $_SESSION['signup'] = "Sign up successfull";
+        header("Location: ../views/signup.php");
+
 
     } catch (Exception $e) {
 
         // ROLLBACK if error
         $conn->rollback();
         echo "Signup failed!";
+        header("Location: ../views/login.php");
     }
 }
 
 
-// Login logic 
+
+
+// Logic for login
 if (isset($_POST['login'])) {
 
-    $email = $_POST['email'];
+    $input = trim($_POST['username']); // can be email or username
     $password = $_POST['password'];
 
-    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
-    $stmt->bind_param("s", $email);
+    if (empty($input) || empty($password)) {
+        $_SESSION['error'] = "All fields are required!";
+        header("Location: ../views/login.php");
+        exit;
+    }
+
+    // Fethcing the user information with join to check wherther email or username exists or not
+    $stmt = $conn->prepare("
+        SELECT 
+            c.id AS credential_id,
+            c.username,
+            c.email,
+            c.password,
+            cu.first_name,
+            cu.last_name,
+            cu.address,
+            cu.phone
+        FROM credentials c
+        JOIN customers cu ON c.id = cu.credential_id
+        WHERE c.email = ? OR c.username = ?
+        LIMIT 1
+    ");
+
+    // Using paramterized statments to prevent SQL injection
+
+    $stmt->bind_param("ss", $input, $input);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    if ($result->num_rows === 1) {
-        $user = $result->fetch_assoc();
-
-        // verify password
-        if (password_verify($password, $user['password'])) {
-
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['role'] = $user['role'];
-
-            echo "Login successful!";
-        } else {
-            echo "Invalid password!";
-        }
-
-    } else {
-        echo "User not found!";
+    if ($result->num_rows === 0) {
+        $_SESSION['error'] = "Invalid credentials! ";
+        header("Location: ../views/login.php");
+        exit;
     }
+
+    $user = $result->fetch_assoc();
+
+    // Verify the provided password with the existing password in the database 
+    if (!password_verify($password, $user['password'])) {
+        $_SESSION['error'] = "Invalid credentials!";
+        header("Location: ../views/login.php");
+        exit;
+    }
+
+    // Session Security 
+    session_regenerate_id(true);
+
+    // Store user data
+    $_SESSION['user'] = [
+        'id' => $user['credential_id'],
+        'username' => $user['username'],
+        'email' => $user['email'],
+        'first_name' => $user['first_name'],
+        'last_name' => $user['last_name'],
+        'address' => $user['address'],
+        'phone' => $user['phone']
+    ];
+
+    $_SESSION['success'] = "Hi, " . $user['first_name'];
+
+    // Redirect
+    header("Location: ../index.php");
+    exit;
 }

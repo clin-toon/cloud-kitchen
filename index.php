@@ -18,10 +18,14 @@
 
 
             <div class="space-x-4">
-                <?php if (isset($_SESSION['user_id'])): ?>
+                <?php if (isset($_SESSION['user'])): ?>
+                    <span class="font-bold">
+                        <?php echo $_SESSION['success'] ?>
+                    </span>
                     <a href="#" class="text-gray-700 hover:text-red-500">Menu</a>
                     <a href="#" class="text-gray-700 hover:text-red-500">Orders</a>
                     <a href="controllers/logout.php" class="bg-red-500 text-white px-4 py-2 rounded">Logout</a>
+
                 <?php else: ?>
                     <a href="views/login.php" class="text-gray-700 hover:text-red-500">Login</a>
                     <a href="views/signup.php" class="bg-red-500 text-white px-4 py-2 rounded">Signup</a>
