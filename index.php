@@ -14,7 +14,8 @@
     <nav class="bg-white shadow-md fixed w-full top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
 
-            <h1 class="text-2xl font-bold text-red-500">🍔 Foodie</h1>
+            <h1 class="text-2xl font-bold text-red-500">🍔 <a href="../../index.php">Foodie</a></h1>
+
 
             <div class="space-x-4">
                 <?php if (isset($_SESSION['user_id'])): ?>

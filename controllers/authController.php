@@ -3,34 +3,60 @@ session_start();
 require_once "../config/db.php";
 
 // SIGNUP
+// SIGNUP
 if (isset($_POST['signup'])) {
 
-    $name = $_POST['name'];
+    $username = $_POST['username'];
     $email = $_POST['email'];
     $password = $_POST['password'];
+
+    $first_name = $_POST['first_name'];
+    $last_name = $_POST['last_name'];
+    $address = $_POST['address'];
+    $phone = $_POST['phone'];
 
     // hash password
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    // check if email exists
-    $checkStmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
-    $checkStmt->bind_param("s", $email);
-    $checkStmt->execute();
-    $result = $checkStmt->get_result();
+    // check if email or username exists
+    $check = $conn->prepare("SELECT id FROM credentials WHERE email = ? OR username = ?");
+    $check->bind_param("ss", $email, $username);
+    $check->execute();
+    $result = $check->get_result();
 
     if ($result->num_rows > 0) {
-        echo "Email already exists!";
+        echo "Email or Username already exists!";
         exit;
     }
 
-    // insert user
-    $stmt = $conn->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
-    $stmt->bind_param("sss", $name, $email, $hashedPassword);
+    // START TRANSACTION 🔥
+    $conn->begin_transaction();
 
-    if ($stmt->execute()) {
+    try {
+
+        // insert into credentials
+        $stmt1 = $conn->prepare("INSERT INTO credentials (username, email, password) VALUES (?, ?, ?)");
+        $stmt1->bind_param("sss", $username, $email, $hashedPassword);
+        $stmt1->execute();
+
+        $credential_id = $stmt1->insert_id;
+
+        // insert into customers
+        $stmt2 = $conn->prepare("INSERT INTO customers (credential_id, first_name, last_name, address, phone) VALUES (?, ?, ?, ?, ?)");
+        $stmt2->bind_param("issss", $credential_id, $first_name, $last_name, $address, $phone);
+        $stmt2->execute();
+
+        // COMMIT
+        $conn->commit();
+
         echo "Signup successful!";
-    } else {
-        echo "Error occurred!";
+        // header("Location: ../views/login.php");
+
+    } catch (Exception $e) {
+
+        // ROLLBACK if error
+        $conn->rollback();
+        echo "Signup failed!";
     }
 }
 
