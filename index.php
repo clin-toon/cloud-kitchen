@@ -10,31 +10,39 @@
 
 <body class="bg-gray-50">
 
-    <!-- 🔥 Navbar -->
-    <nav class="bg-white shadow-md fixed w-full top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+    <?php if (isset($_SESSION['success']) || isset($_SESSION['error'])): ?>
 
-            <h1 class="text-2xl font-bold text-red-500">🍔 <a href="../../index.php">Foodie</a></h1>
+        <!-- Overlay -->
+        <div id="modalOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
 
+            <!-- Modal Box -->
+            <div class="bg-white rounded-2xl shadow-2xl p-6 w-80 text-center animate-fade-in">
 
-            <div class="space-x-4">
-                <?php if (isset($_SESSION['user'])): ?>
-                    <span class="font-bold">
-                        <?php echo $_SESSION['success'] ?>
-                    </span>
-                    <a href="#" class="text-gray-700 hover:text-red-500">Menu</a>
-                    <a href="#" class="text-gray-700 hover:text-red-500">Orders</a>
-                    <a href="controllers/logout.php" class="bg-red-500 text-white px-4 py-2 rounded">Logout</a>
+                <?php if (isset($_SESSION['success'])): ?>
+                    <h2 class="text-green-500 text-xl font-bold mb-2">Success 🎉</h2>
+                    <p class="text-gray-600">
+                        <?php echo $_SESSION['success']; ?>
+                    </p>
+                    <?php unset($_SESSION['success']); endif; ?>
 
-                <?php else: ?>
-                    <a href="views/login.php" class="text-gray-700 hover:text-red-500">Login</a>
-                    <a href="views/signup.php" class="bg-red-500 text-white px-4 py-2 rounded">Signup</a>
-                <?php endif; ?>
+                <?php if (isset($_SESSION['error'])): ?>
+                    <h2 class="text-red-500 text-xl font-bold mb-2">Error ⚠️</h2>
+                    <p class="text-gray-600">
+                        <?php echo $_SESSION['error']; ?>
+                    </p>
+                    <?php unset($_SESSION['error']); endif; ?>
+
+                <button onclick="closeModal()" class="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                    Close
+                </button>
+
             </div>
-
         </div>
-    </nav>
 
+    <?php endif; ?>
+
+    <!-- 🔥 Navbar -->
+    <?php include "./components/navbar.php"; ?>
     <!-- 🔥 Hero Section -->
     <section class="pt-24 pb-16 bg-gradient-to-r from-red-500 to-orange-400 text-white">
         <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-10 items-center">
@@ -154,6 +162,18 @@
     <footer class="bg-gray-900 text-white py-6 text-center">
         <p>© 2026 Foodie. All rights reserved.</p>
     </footer>
+
+    <script>
+        function closeModal() {
+            document.getElementById("modalOverlay").style.display = "none";
+        }
+
+        // Auto close after 2.5 sec 🔥
+        setTimeout(() => {
+            const modal = document.getElementById("modalOverlay");
+            if (modal) modal.style.display = "none";
+        }, 2500);
+    </script>
 
 </body>
 
