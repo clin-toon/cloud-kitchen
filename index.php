@@ -145,7 +145,7 @@
     <section class="py-16 text-center bg-red-500 text-white">
         <h2 class="text-3xl font-bold mb-4">Hungry? Order Now 🍽️</h2>
         <p class="mb-6">Fast delivery at your doorstep</p>
-        <a href="#" class="bg-white text-red-500 px-6 py-3 rounded font-semibold">
+        <a href="./views/menu.php" class="bg-white text-red-500 px-6 py-3 rounded font-semibold">
             Explore Menu
         </a>
     </section>
