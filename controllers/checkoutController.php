@@ -46,8 +46,10 @@ if (isset($_POST['place_order'])) {
         }
 
         // Insert order
-        $orderStmt = $conn->prepare("INSERT INTO orders (user_id, total_amount) VALUES (?, ?)");
-        $orderStmt->bind_param("id", $user_id, $total);
+        $orderStmt = $conn->prepare("INSERT INTO orders (user_id, total_amount, address, phone) VALUES (?, ?, ?, ?)
+");
+
+        $orderStmt->bind_param("idss", $user_id, $total, $address, $phone);
         $orderStmt->execute();
 
         $order_id = $orderStmt->insert_id;

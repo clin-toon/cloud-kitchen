@@ -37,7 +37,10 @@ if (isset($_SESSION['user'])) {
                 Menu
             </a>
 
-            <?php if (isset($_SESSION['user'])): ?>
+            <?php if (isset($_SESSION['user'])):
+                echo $_SESSION['user']['role']
+                    ?>
+
 
                 <!-- Orders -->
                 <a href="#" class="text-gray-700 hover:text-red-500">

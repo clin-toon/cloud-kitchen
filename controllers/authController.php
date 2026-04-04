@@ -88,7 +88,8 @@ if (isset($_POST['login'])) {
             cu.first_name,
             cu.last_name,
             cu.address,
-            cu.phone
+            cu.phone,
+            cu.role
         FROM credentials c
         JOIN customers cu ON c.id = cu.credential_id
         WHERE c.email = ? OR c.username = ?
@@ -127,12 +128,19 @@ if (isset($_POST['login'])) {
         'first_name' => $user['first_name'],
         'last_name' => $user['last_name'],
         'address' => $user['address'],
-        'phone' => $user['phone']
+        'phone' => $user['phone'],
+        'role' => $user['role']
     ];
 
     $_SESSION['success'] = "Hi, " . $user['first_name'];
 
     // Redirect
-    header("Location: ../index.php");
+    if ($user['role'] === 'admin') {
+        header("Location: /cloud_kitchen/views/admin/dashboard.php");
+    } else {
+        header("Location: ../index.php");
+    }
     exit;
+
+
 }
