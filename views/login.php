@@ -54,8 +54,6 @@ session_start()
                     <a href="signup.php" class="text-purple-700 font-semibold underline">Sign up</a>
                 </p>
 
-
-
             </form>
             <?php if (isset($_SESSION['error'])): ?>
                 <p class="text-red-500 text-center font-bold mt-5">

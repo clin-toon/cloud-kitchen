@@ -23,6 +23,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 $total = 0;
+$BASE_URL = "/cloud_kitchen";
 ?>
 
 <!DOCTYPE html>
@@ -104,9 +105,12 @@ $total = 0;
 
             <!-- Checkout Button -->
             <div class="mt-4 text-right">
-                <button class="bg-red-500 text-white px-6 py-3 rounded hover:bg-red-600">
-                    Proceed to Checkout
-                </button>
+                <a href="<?= $BASE_URL ?>/views/checkout.php">
+
+                    <button class="bg-red-500 text-white px-6 py-3 rounded hover:bg-red-600">
+                        Proceed to Checkout
+                    </button>
+                </a>
             </div>
 
         <?php else: ?>
