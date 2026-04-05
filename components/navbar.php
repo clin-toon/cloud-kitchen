@@ -38,8 +38,8 @@ if (isset($_SESSION['user'])) {
             </a>
 
             <?php if (isset($_SESSION['user'])):
-                echo $_SESSION['user']['role']
-                    ?>
+
+                ?>
 
 
                 <!-- Orders -->
@@ -56,6 +56,13 @@ if (isset($_SESSION['user'])) {
                             <?= $cartCount ?>
                         </span>
                     <?php endif; ?>
+                </a>
+
+                <a href="<?= $BASE_URL ?>/views/notifications.php" class="relative">
+                    🔔
+                    <span id="notifCount"
+                        class="hidden absolute -top-2 -right-3 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                    </span>
                 </a>
 
                 <!-- Logout -->
@@ -81,3 +88,27 @@ if (isset($_SESSION['user'])) {
 
     </div>
 </nav>
+
+<script>
+    function fetchNotifications() {
+        fetch("<?= $BASE_URL ?>/api/getNotifications.php")
+            .then(res => res.json())
+            .then(data => {
+                const badge = document.getElementById("notifCount");
+
+                if (data.count > 0) {
+                    badge.innerText = data.count;
+                    badge.classList.remove("hidden");
+                } else {
+                    badge.classList.add("hidden");
+                }
+            })
+            .catch(err => console.log(err));
+    }
+
+    // run every 5 seconds
+    setInterval(fetchNotifications, 5000);
+
+    // run once on load
+    fetchNotifications();
+</script>

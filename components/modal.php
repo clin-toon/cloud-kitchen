@@ -35,6 +35,6 @@
         setTimeout(() => {
             const modal = document.getElementById("modalOverlay");
             if (modal) modal.style.display = "none";
-        }, 2500);
+        }, 10000);
     </script>
 <?php endif; ?>

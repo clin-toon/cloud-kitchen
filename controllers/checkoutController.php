@@ -46,7 +46,7 @@ if (isset($_POST['place_order'])) {
         }
 
         // Insert order
-        $orderStmt = $conn->prepare("INSERT INTO orders (user_id, total_amount, address, phone) VALUES (?, ?, ?, ?)
+        $orderStmt = $conn->prepare("INSERT INTO orders (customer_id, total_amount, address, phone) VALUES (?, ?, ?, ?)
 ");
 
         $orderStmt->bind_param("idss", $user_id, $total, $address, $phone);
@@ -84,9 +84,10 @@ if (isset($_POST['place_order'])) {
         exit;
 
     } catch (Exception $e) {
+        echo $e;
 
         $conn->rollback();
-        $_SESSION['error'] = "Order failed!";
+        $_SESSION['error'] = "Order failed! $e";
         header("Location: ../views/cart.php");
         exit;
     }
