@@ -28,6 +28,7 @@ $stmt->execute();
 </head>
 
 <body class="bg-gray-100 p-6">
+    <?php include "../components/navbar.php"; ?>
 
     <h2 class="text-2xl font-bold mb-4">Notifications 🔔</h2>
 
